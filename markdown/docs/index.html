@@ -1,0 +1,660 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>USF GDSC Spring 2024 React.js GymApp Workshop</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="docs"
+                  title="USF GDSC Spring 2024 React.js GymApp Workshop"
+                  environment="web"
+                  feedback-link="">
+    
+      <google-codelab-step label="Introduction" duration="0">
+        <p>We&#39;re gonna make a web application in React.js and TailWind called GymApp. In the app, we will be able to add, delete workouts that we did and store them in the local storage.</p>
+<p>Please refer to this Codelab as you listen to the Tech Leads. If you have any trouble or cannot keep up, you can copy paste the code from each step or ask the supporting Tech Leads for help. Additionally, on each step there are comments in the code, so you can see where the new things got added.</p>
+<p>React.js, commonly referred to as React, is an open-source JavaScript library developed and maintained by Facebook. It&#39;s widely used for building user interfaces (UIs) for web applications. React.js allows developers to create reusable UI components that can efficiently update and render when the data changes.</p>
+<p>Tailwind is a CSS framework that aims to simplify the process of building responsive and customizable user interfaces for web applications. Unlike traditional CSS frameworks like Bootstrap or Foundation, which provide pre-designed components and styles, Tailwind CSS provides a set of utility classes that developers can use to style their HTML elements directly.</p>
+<p>In other words, today instead of using HTML, CSS, and JavaScript, commonly used for website development, we will use React.js and TailWind.</p>
+<p>Please go to this link and follow along in the App.jsx file <a href="https://zapp.run/edit/flutter" target="_blank">zapp.run/edit/flutter</a>.</p>
+<p>Picture of the ready app. <img style="width: 900.00px" src="img\\2626e2a96e067ae9.jpg"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="General Layout" duration="0">
+        <p>Let&#39;s develop the general layout of the app. To do so, we will make a function App. We will use a tag from HTML called </p>
+<p> to define the structural blocks out app will consist of such as &#34;Details&#34; and &#34;Workout&#34;.</p>
+<p>Moreover, we will add to them property className, which allows us to define styles using TailWind.</p>
+<p>Some styles explained:</p>
+<ul>
+<li>h-screen sets the height of that div block as the height of the laptop screen used</li>
+<li>p-3 sets padding as 3, meaning that our div block will have a space around it of the size 3. Similarly, p-4 sets the space around of the size 4.</li>
+<li>flex sets a layout model that provides a more efficient way to arrange, distribute, and align elements within a container.</li>
+<li>flex-row states that blocks inside of the div will be in a one line (a row)</li>
+<li>justify-around sets the space between the blocks inside of the div</li>
+<li>bg-gray-200 sets the background as gray of the light shade</li>
+</ul>
+<p>The result should look like a grey page with the &#34;Details&#34; on the left and &#34;Add workout&#34; on the right.</p>
+<p class="image-container"><img style="width: 900.00px" src="img\\bc4c6495ff30fdf7.jpg"></p>
+<p>Code we just made: App.jsx</p>
+<pre><code language="language-javascript" class="language-javascript">// Dependencies
+import React from &#34;react&#34;;
+import { useState } from &#34;react&#34;;
+
+// Styles
+import &#34;./tailwind.output.css&#34;;
+
+const App = () =&gt; {
+  return (
+    &lt;div className=&#34;h-screen p-3 flex flex-row justify-around bg-gray-200&#34;&gt;
+      &lt;div className=&#34;w-2/3&#34;&gt;Details&lt;/div&gt;
+
+      &lt;div className=&#34;p-4 flex flex-col&#34;&gt;Add workout&lt;/div&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default App;
+
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Define empty functions and state" duration="0">
+        <p>Now let&#39;s define our future functions and states (variables) where we will store our information such as 1. the workouts we already have and 2. information that is currently inputed by the user in our form.</p>
+<p>Let&#39;s take a look at what setState is using the example from the code const [workouts, setWorkouts] = useState([]); . This line of code declares a state variable named workouts and a function named setWorkouts to update this state variable value. The initial state (variable) of workouts is an empty array. Later in the component&#39;s code, you can use workouts to access the current state variable value and setWorkouts to update it. To simplify, state is just a kind of a variable used in React.js that tells the component, particularly App, that it needs to keep track of this variable workouts and sometimes it will be updated.</p>
+<p>Moreover, React.js uses arrow functions from JavaScript, which look like this const handleChange = (e) =&gt; {}; all it means is that handleChange is the name of the function and it takes an argument &#34;e&#34;.</p>
+<p>Lastly, emtyInput variable stores the object (dict if you are familiar with python) that shows what keys and values the form has before a person inputed anything.</p>
+<p>To visualize, what stores what, here is a picture.</p>
+<p class="image-container"><img style="width: 900.00px" src="img\\2a06cde85f38dad.jpg"></p>
+<p>App.jsx</p>
+<pre><code language="language-javascript" class="language-javascript">// Dependencies
+import React from &#34;react&#34;;
+import { useState } from &#34;react&#34;;
+
+// Styles
+import &#34;./tailwind.output.css&#34;;
+
+const App = () =&gt; {
+  /* New code starts */
+  const [workouts, setWorkouts] = useState([]);
+
+  const emptyInput = {
+    title: &#34;&#34;,
+    reps: &#34;&#34;,
+    load: &#34;&#34;,
+  };
+
+  const [inputValues, setInputValues] = useState(emptyInput);
+
+  const handleChange = (e) =&gt; {};
+
+  const handleSubmit = () =&gt; {};
+
+  const handleDelete = (index) =&gt; {};
+
+  /* New code ends */
+
+  return (
+    &lt;div className=&#34;h-screen p-3 flex flex-row justify-around bg-gray-200&#34;&gt;
+      &lt;div className=&#34;w-2/3&#34;&gt;Details&lt;/div&gt;
+
+      &lt;div className=&#34;p-4 flex flex-col&#34;&gt;Add workout&lt;/div&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default App;
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Add Frontend (UI) for the form" duration="0">
+        <p>Instead of the words &#34;Add workout&#34;, add the code below which will make the UI of the form.</p>
+<p>If you are confused what each word does, please refer to the explanation below:</p>
+<p>Here we get introduced to 3 more HTML tags:</p>
+<ul>
+<li> acts similar to div, defining a component but is usually used as a paragraph (text) </li>
+<li> creates an input window for the form <ul>
+<li>placeholder sets the text in the input</li>
+<li>type sets the type of data user can input</li>
+<li>onChange calls the function when input gets changed</li>
+<li>name when data from the form gets into an object (dict), the name becomes its key</li>
+<li>value sets where to store what is being inputed</li>
+<li>min sets minimum possible value a user can input</li>
+</ul>
+</li>
+<li> creates the clicable button</li>
+</ul>
+<p>New TailWind styles:</p>
+<ul>
+<li>font-bold sets the text as bold</li>
+<li>mb-3 sets the space on the bottom of the block, outside of its border</li>
+<li>rounded-md sets the border of the element as middle rounded</li>
+<li>text-white sets the color of the text as white</li>
+<li>py-2 and px-4 make pudding, but py allows to control Y-axis while p-x allows to control X-axis</li>
+</ul>
+<p class="image-container"><img style="width: 900.00px" src="img\\5d13b73d7d6812ed.jpg"></p>
+<p>App.jsx</p>
+<pre><code language="language-javascript" class="language-javascript">// Dependencies
+import React from &#34;react&#34;;
+import { useState } from &#34;react&#34;;
+
+// Styles
+import &#34;./tailwind.output.css&#34;;
+
+const App = () =&gt; {
+  const [workouts, setWorkouts] = useState([]);
+
+  const emptyInput = {
+    title: &#34;&#34;,
+    reps: &#34;&#34;,
+    load: &#34;&#34;,
+  };
+
+  const [inputValues, setInputValues] = useState(emptyInput);
+
+  const handleChange = (e) =&gt; {};
+
+  const handleSubmit = () =&gt; {};
+
+  const handleDelete = (index) =&gt; {};
+
+  return (
+    &lt;div className=&#34;h-screen p-3 flex flex-row justify-around bg-gray-200&#34;&gt;
+      &lt;div className=&#34;w-2/3&#34;&gt;Details&lt;/div&gt;
+
+      &lt;div className=&#34;p-4 flex flex-col&#34;&gt;
+        /* New code for the Add Workout Starts */
+        &lt;p className=&#34;font-bold mb-3&#34;&gt;Add a New Workout&lt;/p&gt;
+        &lt;input
+          placeholder=&#34;Exercise Name&#34;
+          type=&#34;text&#34;
+          onChange={handleChange}
+          name=&#34;title&#34;
+          value={inputValues.title}
+          className=&#34;p-1 mb-3 rounded-md&#34;
+        /&gt;
+        &lt;input
+          placeholder=&#34;Load (in KG)&#34;
+          type=&#34;number&#34;
+          onChange={handleChange}
+          name=&#34;load&#34;
+          value={inputValues.load}
+          min=&#34;0&#34;
+          className=&#34;p-1 mb-3 rounded-md&#34;
+        /&gt;
+        &lt;input
+          placeholder=&#34;Reps&#34;
+          type=&#34;number&#34;
+          onChange={handleChange}
+          name=&#34;reps&#34;
+          value={inputValues.reps}
+          min=&#34;0&#34;
+          className=&#34;p-1 mb-3 rounded-md&#34;
+        /&gt;
+        &lt;button
+          onClick={handleSubmit}
+          className=&#34;bg-green-600 text-white py-2 px-4 rounded-md&#34;
+        &gt;
+          Add Workout
+        &lt;/button&gt;
+        /* New code for the Add Workout ends */
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default App;
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Add Frontend for the Workout Details" duration="0">
+        <p>Let&#39;s add UI for our Workout details, which are displayed when we click on &#34;Add Workout&#34;. Right now our functions are not ready, so you will not see any difference on the screen. It is okay.</p>
+<p>At this point, everything we added you have met in previous steps besides:</p>
+<ul>
+<li>workouts.map(() =&gt; ()) is a smart React.js way to make a for loop that for every workout that we have in the workouts will make its own HTML tags, so we only need to write them for one workout and not all of them</li>
+<li>text-xl sets the text size as large</li>
+</ul>
+<p>App.jsx</p>
+<pre><code language="language-dart" class="language-dart">// Dependencies
+import React from &#34;react&#34;;
+import { useState } from &#34;react&#34;;
+
+// Styles
+import &#34;./tailwind.output.css&#34;;
+
+const App = () =&gt; {
+  const [workouts, setWorkouts] = useState([]);
+
+  const emptyInput = {
+    title: &#34;&#34;,
+    reps: &#34;&#34;,
+    load: &#34;&#34;,
+  };
+
+  const [inputValues, setInputValues] = useState(emptyInput);
+
+  const handleChange = (e) =&gt; {};
+
+  const handleSubmit = () =&gt; {};
+
+  const handleDelete = (index) =&gt; {};
+
+  return (
+    &lt;div className=&#34;h-screen p-3 flex flex-row justify-around bg-gray-200&#34;&gt;
+      &lt;div className=&#34;w-2/3&#34;&gt;
+      /* New code for the Details Starts */
+        {workouts.map((workout, index) =&gt; (
+          &lt;div key={index} className=&#34;p-4 bg-white mb-4&#34;&gt;
+            &lt;p className=&#34;text-xl text-green-600 font-bold&#34;&gt;{workout.title}&lt;/p&gt;
+            &lt;p&gt;Load: {workout.load} lbs&lt;/p&gt;
+            &lt;p&gt;Reps: {workout.reps}&lt;/p&gt;
+          &lt;/div&gt;
+        ))}
+      /* New code for the Details ends */
+      &lt;/div&gt;
+
+      &lt;div className=&#34;p-4 flex flex-col&#34;&gt;
+        &lt;p className=&#34;font-bold mb-3&#34;&gt;Add a New Workout&lt;/p&gt;
+        &lt;input
+          placeholder=&#34;Exercise Name&#34;
+          type=&#34;text&#34;
+          onChange={handleChange}
+          name=&#34;title&#34;
+          value={inputValues.title}
+          className=&#34;p-1 mb-3 rounded-md&#34;
+        /&gt;
+        &lt;input
+          placeholder=&#34;Load (in KG)&#34;
+          type=&#34;number&#34;
+          onChange={handleChange}
+          name=&#34;load&#34;
+          value={inputValues.load}
+          min=&#34;0&#34;
+          className=&#34;p-1 mb-3 rounded-md&#34;
+        /&gt;
+        &lt;input
+          placeholder=&#34;Reps&#34;
+          type=&#34;number&#34;
+          onChange={handleChange}
+          name=&#34;reps&#34;
+          value={inputValues.reps}
+          min=&#34;0&#34;
+          className=&#34;p-1 mb-3 rounded-md&#34;
+        /&gt;
+        &lt;button
+          onClick={handleSubmit}
+          className=&#34;bg-green-600 text-white py-2 px-4 rounded-md&#34;
+        &gt;
+          Add Workout
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default App;
+
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Finish functions handleChange and handleSubmit" duration="0">
+        <p>Let&#39;s finish the function handleChange gets called when a user changes value in any of the inputs. It takes what is stored in the target input, splits it into the name of the input and its value, and finally updates what is currently inputed in the form with old data plus new data in the certain input where it got changed.</p>
+<p>The function handleSubmit gets called when we press &#34;Add Workout&#34; button. It takes the previous workouts we had and adds to them the new workout we just inputed. Lastly, since it added the inputed workouts, it clears out the form to make the inputs in it empty.</p>
+<p>Now, try to fill out the form and thew workouts should start appearing on the left.</p>
+<p class="image-container"><img style="width: 900.00px" src="img\\8f4c617f9b7d10d2.jpg"></p>
+<p>App.jsx</p>
+<pre><code language="language-javascript" class="language-javascript">// Dependencies
+import React from &#34;react&#34;;
+import { useState } from &#34;react&#34;;
+
+// Styles
+import &#34;./tailwind.output.css&#34;;
+
+const App = () =&gt; {
+  const [workouts, setWorkouts] = useState([]);
+
+  const emptyInput = {
+    title: &#34;&#34;,
+    reps: &#34;&#34;,
+    load: &#34;&#34;,
+  };
+
+  const [inputValues, setInputValues] = useState(emptyInput);
+
+  /* new code starts */
+  const handleChange = (e) =&gt; {
+    const { name, value } = e.target;
+    setInputValues({ ...inputValues, [name]: value });
+  };
+
+  const handleSubmit = () =&gt; {
+    const newWorkouts = [...workouts, inputValues];
+    setWorkouts(newWorkouts);
+    setInputValues(emptyInput);
+  };
+
+  /* new code ends */
+
+  const handleDelete = (index) =&gt; {};
+
+  return (
+    &lt;div className=&#34;h-screen p-3 flex flex-row justify-around bg-gray-200&#34;&gt;
+      &lt;div className=&#34;w-2/3&#34;&gt;
+        {workouts.map((workout, index) =&gt; (
+          &lt;div key={index} className=&#34;p-4 bg-white mb-4&#34;&gt;
+            &lt;p className=&#34;text-xl text-green-600 font-bold&#34;&gt;{workout.title}&lt;/p&gt;
+            &lt;p&gt;Load: {workout.load} lbs&lt;/p&gt;
+            &lt;p&gt;Reps: {workout.reps}&lt;/p&gt;
+          &lt;/div&gt;
+        ))}
+      &lt;/div&gt;
+
+      &lt;div className=&#34;p-4 flex flex-col&#34;&gt;
+        &lt;p className=&#34;font-bold mb-3&#34;&gt;Add a New Workout&lt;/p&gt;
+        &lt;input
+          placeholder=&#34;Exercise Name&#34;
+          type=&#34;text&#34;
+          onChange={handleChange}
+          name=&#34;title&#34;
+          value={inputValues.title}
+          className=&#34;p-1 mb-3 rounded-md&#34;
+        /&gt;
+        &lt;input
+          placeholder=&#34;Load (in KG)&#34;
+          type=&#34;number&#34;
+          onChange={handleChange}
+          name=&#34;load&#34;
+          value={inputValues.load}
+          min=&#34;0&#34;
+          className=&#34;p-1 mb-3 rounded-md&#34;
+        /&gt;
+        &lt;input
+          placeholder=&#34;Reps&#34;
+          type=&#34;number&#34;
+          onChange={handleChange}
+          name=&#34;reps&#34;
+          value={inputValues.reps}
+          min=&#34;0&#34;
+          className=&#34;p-1 mb-3 rounded-md&#34;
+        /&gt;
+        &lt;button
+          onClick={handleSubmit}
+          className=&#34;bg-green-600 text-white py-2 px-4 rounded-md&#34;
+        &gt;
+          Add Workout
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default App;
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Bonus step: implement handleDelete function" duration="0">
+        <p>Let&#39;s add a button &#34;Delete&#34;, which when pressed will delete the workout from our list. To achieve that, under the reps that we show in the workout details, we will add a button. Also, we will add code to our handleDelete function that was created earlier. All the function does is it takes our workouts, finds with the splice function the location of the workout we want to delete, deletes it and then sets the workouts as the new array.</p>
+<p class="image-container"><img style="width: 900.00px" src="img\\2626e2a96e067ae9.jpg"></p>
+<p>App.jsx</p>
+<pre><code language="language-javascript" class="language-javascript">// Dependencies
+import React from &#34;react&#34;;
+import { useState } from &#34;react&#34;;
+
+// Styles
+import &#34;./tailwind.output.css&#34;;
+
+const App = () =&gt; {
+  const [workouts, setWorkouts] = useState([]);
+
+  const emptyInput = {
+    title: &#34;&#34;,
+    reps: &#34;&#34;,
+    load: &#34;&#34;,
+  };
+
+  const [inputValues, setInputValues] = useState(emptyInput);
+
+  const handleChange = (e) =&gt; {
+    const { name, value } = e.target;
+    setInputValues({ ...inputValues, [name]: value });
+  };
+
+  const handleSubmit = () =&gt; {
+    const newWorkouts = [...workouts, inputValues];
+    setWorkouts(newWorkouts);
+    setInputValues(emptyInput);
+  };
+
+  /* new code starts */
+  const handleDelete = (index) =&gt; {
+    const updatedWorkouts = [...workouts];
+    updatedWorkouts.splice(index, 1);
+    setWorkouts(updatedWorkouts);
+  };
+  /* new code ends */
+
+  return (
+    &lt;div className=&#34;h-screen p-3 flex flex-row justify-around bg-gray-200&#34;&gt;
+      &lt;div className=&#34;w-2/3&#34;&gt;
+        {workouts.map((workout, index) =&gt; (
+          &lt;div key={index} className=&#34;p-4 bg-white mb-4&#34;&gt;
+            &lt;p className=&#34;text-xl text-green-600 font-bold&#34;&gt;{workout.title}&lt;/p&gt;
+            &lt;p&gt;Load: {workout.load} lbs&lt;/p&gt;
+            &lt;p&gt;Reps: {workout.reps}&lt;/p&gt;
+            /* new code starts */
+            &lt;button
+              className=&#34;bg-red-600 text-white py-2 px-4 rounded-md mt-3&#34;
+              onClick={() =&gt; {
+                handleDelete(index);
+              }}
+            &gt;
+              Delete
+            &lt;/button&gt;
+            /* new code ends */
+          &lt;/div&gt;
+        ))}
+      &lt;/div&gt;
+
+      &lt;div className=&#34;p-4 flex flex-col&#34;&gt;
+        &lt;p className=&#34;font-bold mb-3&#34;&gt;Add a New Workout&lt;/p&gt;
+        &lt;input
+          placeholder=&#34;Exercise Name&#34;
+          type=&#34;text&#34;
+          onChange={handleChange}
+          name=&#34;title&#34;
+          value={inputValues.title}
+          className=&#34;p-1 mb-3 rounded-md&#34;
+        /&gt;
+        &lt;input
+          placeholder=&#34;Load (in KG)&#34;
+          type=&#34;number&#34;
+          onChange={handleChange}
+          name=&#34;load&#34;
+          value={inputValues.load}
+          min=&#34;0&#34;
+          className=&#34;p-1 mb-3 rounded-md&#34;
+        /&gt;
+        &lt;input
+          placeholder=&#34;Reps&#34;
+          type=&#34;number&#34;
+          onChange={handleChange}
+          name=&#34;reps&#34;
+          value={inputValues.reps}
+          min=&#34;0&#34;
+          className=&#34;p-1 mb-3 rounded-md&#34;
+        /&gt;
+        &lt;button
+          onClick={handleSubmit}
+          className=&#34;bg-green-600 text-white py-2 px-4 rounded-md&#34;
+        &gt;
+          Add Workout
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default App;
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Bonus step: store workouts in local storage" duration="0">
+        <p>localStorage is a feature in web browsers that allows web applications to store data locally within the user&#39;s browser. It provides a simple key-value store, similar to cookies, but with a larger storage capacity and better security. In simple words, if you store something in localStorage, if you reload your web applications, that data is still saved. However, if you go to the web application in another browser or computer, it will not be saved.</p>
+<p>To add this functionality, we need to load our workouts from the localStorage when the user opens the page, save the workouts in the localStorage when handleSubmit function is called and save the updated workouts when handleDelete function is called.</p>
+<p>App.jsx</p>
+<pre><code language="language-javascript" class="language-javascript">// Dependencies
+import React from &#34;react&#34;;
+import { useState } from &#34;react&#34;;
+
+// Styles
+import &#34;./tailwind.output.css&#34;;
+
+const App = () =&gt; {
+  /* Code change starts here */
+  const [workouts, setWorkouts] = useState(() =&gt; {
+    const savedWorkouts = localStorage.getItem(&#34;workouts&#34;);
+    return savedWorkouts ? JSON.parse(savedWorkouts) : [];
+  });
+  /* Code change ends here */
+
+  const emptyInput = {
+    title: &#34;&#34;,
+    reps: &#34;&#34;,
+    load: &#34;&#34;,
+  };
+
+  const [inputValues, setInputValues] = useState(emptyInput);
+
+  const handleChange = (e) =&gt; {
+    const { name, value } = e.target;
+    setInputValues({ ...inputValues, [name]: value });
+  };
+
+  const handleSubmit = () =&gt; {
+    const newWorkouts = [...workouts, inputValues];
+    setWorkouts(newWorkouts);
+    /* The line below got added */
+    localStorage.setItem(&#34;workouts&#34;, JSON.stringify(newWorkouts));
+    setInputValues(emptyInput);
+  };
+
+  const handleDelete = (index) =&gt; {
+    const updatedWorkouts = [...workouts];
+    updatedWorkouts.splice(index, 1);
+    setWorkouts(updatedWorkouts);
+    /* The line below got added */
+    localStorage.setItem(&#34;workouts&#34;, JSON.stringify(updatedWorkouts));
+  };
+
+  return (
+    &lt;div className=&#34;h-screen p-3 flex flex-row justify-around bg-gray-200&#34;&gt;
+      &lt;div className=&#34;w-2/3&#34;&gt;
+        {workouts.map((workout, index) =&gt; (
+          &lt;div key={index} className=&#34;p-4 bg-white mb-4&#34;&gt;
+            &lt;p className=&#34;text-xl text-green-600 font-bold&#34;&gt;{workout.title}&lt;/p&gt;
+            &lt;p&gt;Load: {workout.load} lbs&lt;/p&gt;
+            &lt;p&gt;Reps: {workout.reps}&lt;/p&gt;
+            &lt;button
+              className=&#34;bg-red-600 text-white py-2 px-4 rounded-md mt-3&#34;
+              onClick={() =&gt; {
+                handleDelete(index);
+              }}
+            &gt;
+              Delete
+            &lt;/button&gt;
+          &lt;/div&gt;
+        ))}
+      &lt;/div&gt;
+
+      &lt;div className=&#34;p-4 flex flex-col&#34;&gt;
+        &lt;p className=&#34;font-bold mb-3&#34;&gt;Add a New Workout&lt;/p&gt;
+        &lt;input
+          placeholder=&#34;Exercise Name&#34;
+          type=&#34;text&#34;
+          onChange={handleChange}
+          name=&#34;title&#34;
+          value={inputValues.title}
+          className=&#34;p-1 mb-3 rounded-md&#34;
+        /&gt;
+        &lt;input
+          placeholder=&#34;Load (in KG)&#34;
+          type=&#34;number&#34;
+          onChange={handleChange}
+          name=&#34;load&#34;
+          value={inputValues.load}
+          min=&#34;0&#34;
+          className=&#34;p-1 mb-3 rounded-md&#34;
+        /&gt;
+        &lt;input
+          placeholder=&#34;Reps&#34;
+          type=&#34;number&#34;
+          onChange={handleChange}
+          name=&#34;reps&#34;
+          value={inputValues.reps}
+          min=&#34;0&#34;
+          className=&#34;p-1 mb-3 rounded-md&#34;
+        /&gt;
+        &lt;button
+          onClick={handleSubmit}
+          className=&#34;bg-green-600 text-white py-2 px-4 rounded-md&#34;
+        &gt;
+          Add Workout
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default App;
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Conclusion" duration="0">
+        <p>Good job.</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>
