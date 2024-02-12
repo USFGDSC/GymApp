@@ -21,7 +21,13 @@ In other words, today instead of using HTML, CSS, and JavaScript, commonly used 
 3. Fork the project by clicking the "Fork" Button on the top right
 4. Follow along in the App.jsx file in the src folder
 
+After the workshop, if you are intersted to install everything locally on your computer check out:
+1. [Install Node.js](https://nodejs.org/en/download)
+2. [Install NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) 
+3. [Setting up Tailwind and React and Vite](https://tailwindcss.com/docs/guides/vite)
+
 Picture of the ready app.
+
 <img src="docs\img\readyapp.jpg" width="900">
 
 ## General Layout
