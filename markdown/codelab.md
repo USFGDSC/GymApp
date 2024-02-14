@@ -33,7 +33,7 @@ Picture of the ready app.
 ## General Layout
 
 Let's develop the general layout of the app. To do so, we will make a function App.
-We will use a tag from HTML called <div></div> to define the structural blocks out app will consist of such as "Details" and "Workout".
+We will use a tag from HTML called ```<div></div>``` to define the structural blocks out app will consist of such as "Details" and "Workout".
 
 Moreover, we will add to them property className, which allows us to define styles using TailWind.
 
@@ -135,15 +135,15 @@ Instead of the words "Add workout", add the code below which will make the UI of
 If you are confused what each word does, please refer to the explanation below:
 
 Here we get introduced to 3 more HTML tags:
-- <p></p> acts similar to div, defining a component but is usually used as a paragraph (text)
-- <input /> creates an input window for the form
+- ```<p></p>``` acts similar to div, defining a component but is usually used as a paragraph (text)
+- ```<input />``` creates an input window for the form
   - placeholder sets the text in the input
   - type sets the type of data user can input
   - onChange calls the function when input gets changed
   - name when data from the form gets into an object (dict), the name becomes its key
   - value sets where to store what is being inputed
   - min sets minimum possible value a user can input
-- <button></button> creates the clicable button
+- ```<button></button>``` creates the clicable button
 
 New TailWind styles:
 - font-bold sets the text as bold
