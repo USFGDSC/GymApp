@@ -1,6 +1,6 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-Link to CodeLab: [https://gdsc-gymapp.netlify.app/#0](url)
+Link to CodeLab: https://gdsc-gymapp.netlify.app/#0
 
 ## Available Scripts
 
